@@ -99,6 +99,38 @@ async function run() {
             res.send(result)
         })
 
+        //         //PUT method for dynamic revews
+        // app.put('/reviews/:id', async (req, res) => {
+        //     const id = req.params.id;
+        //     // console.log(id)
+        //     const review = req.body.review;
+        //     const query = { _id: ObjectId(id) }
+        //     const updateDoc = {
+        //       $set: {
+        //         review: review
+        //       }
+        //     }
+        //     const result = await ReviwsCollection.updateOne(query, updateDoc)
+        //     res.send(result)
+        //   });
+
+
+        // modifide by put method
+        app.put('/productss/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const advertised = req.body
+            console.log(id, advertised)
+            const options = { upsert: true }
+            const updateDoc = {
+                $set: {
+                    isAdvertised: 'advertised'
+                }
+            }
+            const result = await productsCollection.updateOne(query, updateDoc, options)
+            res.send(result)
+        })
+
 
 
     }
