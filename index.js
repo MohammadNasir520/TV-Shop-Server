@@ -60,6 +60,14 @@ async function run() {
             const result = await usersCollection.find(query).toArray()
             res.send(result)
         })
+        // delete buyer by id
+        app.delete('/users/buyer/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: ObjectId(id) }
+            const result = await usersCollection.deleteOne(query);
+            res.send(result)
+        })
 
         // checking buyer with email
         app.get('/users/Buyer/:email', async (req, res) => {
