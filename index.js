@@ -44,6 +44,14 @@ async function run() {
             const result = await usersCollection.find(query).toArray()
             res.send(result)
         })
+        // delete seller by id
+        app.delete('/users/seller/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: ObjectId(id) };
+            const result = await usersCollection.deleteOne(query);
+            res.send(result);
+        })
         // load all buyer
         app.get('/users/buyer', async (req, res) => {
             const query = {
