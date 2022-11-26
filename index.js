@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId, } = require('mongodb');
+const { query } = require('express');
 const port = process.env.PORT || 5000;
 require('dotenv').config()
 
@@ -35,9 +36,24 @@ async function run() {
             const result = await usersCollection.insertOne(user);
             res.send(result)
         })
+        // load all seller
+        app.get('/users/seller', async (req, res) => {
+            const query = {
+                role: 'Seller'
+            };
+            const result = await usersCollection.find(query).toArray()
+            res.send(result)
+        })
+        // load all buyer
+        app.get('/users/buyer', async (req, res) => {
+            const query = {
+                role: 'Buyer'
+            };
+            const result = await usersCollection.find(query).toArray()
+            res.send(result)
+        })
 
-
-        // load buyer with email
+        // checking buyer with email
         app.get('/users/Buyer/:email', async (req, res) => {
             const email = req.params.email
             console.log(email)
@@ -45,7 +61,7 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ Buyer: user?.role === 'Buyer' })
         })
-        // load Seller with email
+        // Checking Seller with email
         app.get('/users/Seller/:email', async (req, res) => {
             const email = req.params.email
             console.log(email)
@@ -53,6 +69,17 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ Seller: user?.role === 'Seller' })
         })
+        // checking Admin with email
+        app.get('/users/Admin/:email', async (req, res) => {
+            const email = req.params.email
+            console.log(email)
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            res.send({ Admin: user?.role === 'Admin' })
+        })
+
+
+
 
         /***
          * app.Post('/products')
@@ -131,7 +158,13 @@ async function run() {
             res.send(result)
         })
 
+        // load advertised products
+        app.get('/products/advertised', async (req, res) => {
+            const query = { isAdvertised: 'advertised' };
+            const result = await productsCollection.find(query).toArray()
+            res.send(result)
 
+        })
 
     }
     finally {
