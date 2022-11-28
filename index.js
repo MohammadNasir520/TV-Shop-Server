@@ -22,6 +22,7 @@ async function run() {
     try {
         const usersCollection = client.db('tv-shopdb').collection('users')
         const productsCollection = client.db('tv-shopdb').collection('products')
+        const bookedCollection = client.db('tv-shopdb').collection('bookedCollection')
 
         /***
          *
@@ -180,6 +181,31 @@ async function run() {
             const result = await productsCollection.find(query).toArray()
             res.send(result)
 
+        });
+
+        // save booked product.
+        app.post('/bookedProduct', async (req, res) => {
+            const bookedProduct = req.body;
+            console.log(bookedProduct)
+            const result = await bookedCollection.insertOne(bookedProduct);
+            res.send(result)
+        })
+
+        // find product from product collection according to booked product _id
+        app.get('/bookedProduct', async (req, res) => {
+
+            const query = {};
+            const allBookedProducts = await bookedCollection.find(query).toArray();
+            res.send(allBookedProducts)
+            // const allProducts = await productsCollection.find(query).toArray()
+            // console.log(allProducts)
+
+            //     allBookedProducts.forEach(product => {
+            //         const bookedProducts = allProducts.filter(bookedProduct => product.productName === bookedProduct.productName)
+            //         console.log(bookedProducts)
+            //         res.send(bookedProducts)
+
+            //     })
         })
 
     }
