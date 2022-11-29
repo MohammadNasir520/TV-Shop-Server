@@ -70,14 +70,37 @@ async function run() {
             res.send(result)
         })
 
-        // checking buyer with email
-        app.get('/users/Buyer/:email', async (req, res) => {
-            const email = req.params.email
+        // // checking buyer with email
+        // app.get('/users/Buyer/:email', async (req, res) => {
+        //     const email = req.params.email
+        //     console.log(email)
+        //     const query = { email: email };
+        //     const user = await usersCollection.findOne(query);
+        //     res.send({ Buyer: user?.role === 'Buyer' })
+        // })
+        // Checking Seller with email
+        // app.get('/users/buyer/:email', async (req, res) => {
+        //     const email = req.params.email
+        //     console.log(email)
+        //     const query = { email: email };
+        //     const user = await usersCollection.findOne(query);
+        //     res.send({ Buyer: user?.role === 'Buyer' })
+        // })
+
+        // checking buyer.
+        app.get('/users/buyer/:email', async (req, res) => {
+            const email = req.params.email;
             console.log(email)
-            const query = { email: email };
-            const user = await usersCollection.findOne(query);
-            res.send({ Buyer: user?.role === 'Buyer' })
+            const query = {
+
+                email: email
+            }
+            const buyer = await usersCollection.findOne(query);
+
+            res.send({ Buyer: buyer?.role === "Buyer" })
         })
+
+
         // Checking Seller with email
         app.get('/users/Seller/:email', async (req, res) => {
             const email = req.params.email
@@ -159,7 +182,7 @@ async function run() {
         //   });
 
 
-        // modifide by put method
+        // update advertised value by put method
         app.put('/productss/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
@@ -173,6 +196,31 @@ async function run() {
             }
             const result = await productsCollection.updateOne(query, updateDoc, options)
             res.send(result)
+        })
+
+        // update seller status varifye.
+        app.put('/seller/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email)
+            const query = {
+                email: email
+            }
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    isVerified: 'verified'
+                }
+
+            }
+            const result = await usersCollection.updateOne(query, updateDoc, options);
+            res.send(result)
+        })
+
+
+        // load seller status.
+        app.get('seller/verify/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(email)
         })
 
         // load advertised products
