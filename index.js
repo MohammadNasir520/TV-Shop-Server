@@ -240,11 +240,14 @@ async function run() {
         })
 
         // find product from product collection according to booked product _id
-        app.get('/bookedProduct', async (req, res) => {
-
-            const query = {};
-            const allBookedProducts = await bookedCollection.find(query).toArray();
-            res.send(allBookedProducts)
+        app.get('/bookedProduct/:email', async (req, res) => {
+            const email = req.params.email
+            console.log(email)
+            const query = {
+                email: email,
+            };
+            const BookedProducts = await bookedCollection.find(query).toArray();
+            res.send(BookedProducts)
             // const allProducts = await productsCollection.find(query).toArray()
             // console.log(allProducts)
 
