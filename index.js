@@ -6,6 +6,9 @@ const { query } = require('express');
 const port = process.env.PORT || 5000;
 require('dotenv').config()
 
+
+const stripe = require('stripe')(process.env.STRIPE_SECREATE_KEY)
+
 // midle ware
 app.use(cors());
 app.use(express.json());
@@ -239,6 +242,50 @@ async function run() {
             res.send(result)
         })
 
+
+        // // create payment intent and payment
+        // app.post('/create-payment-intent', async (req, res) => {
+        //     const price = req.body.price;
+        //     const amount = parseFloat(price) * 100;
+        //     try {
+
+        //         const paymentIntent = await stripe.paymentIntents.create({
+        //             amount: amount,
+        //             currency: 'usd',
+        //             'payment_method_types': ['card']
+        //         })
+
+        //         res.send({ clientSecrete: paymentIntent.client_secrete })
+
+        //     } catch (err) {
+        //         console.log(err)
+        //     }
+        // })
+
+
+        // for stripe payment intent .
+        app.post('/create-payment-intent', async (req, res) => {
+
+            // collecting payment price from client side
+            const booking = req.body;
+            const productPrice = booking.productPrice;
+            const amount = productPrice * 100;
+
+
+            // create payment intent, payment type,currency type.
+            const paymentIntent = await stripe.paymentIntents.create({
+                currency: 'usd',
+                amount: amount,
+                payment_method_types: [
+                    "card"
+                ]
+            })
+            res.send({
+                clientSecret: paymentIntent.client_secret,
+            });
+        })
+
+
         // find product from product collection according to booked product _id
         app.get('/bookedProduct/:email', async (req, res) => {
             const email = req.params.email
@@ -257,6 +304,16 @@ async function run() {
             //         res.send(bookedProducts)
 
             //     })
+        });
+        //load booked product by id
+        app.get('/bookingProduct/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = {
+                productId: id
+            }
+            const bookingProduct = await bookedCollection.findOne(query);
+            res.send(bookingProduct)
         })
 
     }
@@ -269,7 +326,7 @@ run().catch(err => console.log(err))
 
 
 app.get('/', (req, res) => {
-    res.send('server api is running')
+    res.send('tv shop server api is running')
 });
 
 
