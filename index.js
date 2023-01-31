@@ -32,11 +32,23 @@ async function run() {
 
 
         //save Users  to the mongodb
-        app.post("/users", async (req, res) => {
-            const user = req.body;
-            const result = await usersCollection.insertOne(user);
+        app.put("/users/:email", async (req, res) => {
+            const email = req.params.email
+            const user = req.body
+            console.log(email);
+            const filter = { email: email }
+            const options = { upsert: true }
+            const updatedDoc = {
+                $set: user
+            }
+            const result = await usersCollection.updateOne(filter, updatedDoc, options);
             res.send(result)
         })
+
+
+
+
+
 
         // get a single user  by email
         app.get('/user/:email', async (req, res) => {
@@ -210,7 +222,16 @@ async function run() {
             res.send(BookedProducts)
         });
 
-
+        // delete bookings by id 
+        app.delete('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = {
+                _id: ObjectId(id)
+            }
+            const result = await bookedCollection.deleteOne(query)
+            res.send(result)
+        })
 
 
         // ..........................................................................payments................................
