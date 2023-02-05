@@ -190,7 +190,7 @@ async function run() {
 
 
 
-        // ......................................................................bookings............................
+        // .......................................................................bookings............................
         // save booked product. to database
         app.post('/bookedProduct', async (req, res) => {
             const bookedProduct = req.body;
